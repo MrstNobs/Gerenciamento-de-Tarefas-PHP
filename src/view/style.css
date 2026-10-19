@@ -1,0 +1,383 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    background: #e8e9eb;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* Container cinza externo */
+.main {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #d9d9d9;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.main h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 24px;
+}
+
+/* Painel azul do formulário */
+.form {
+    background: #adb8d9;
+    padding: 24px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+}
+
+.form label {
+    font-weight: 600;
+    color: #2b2f45;
+}
+
+.form input {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 6px 0 14px;
+    border: 1px solid #8f9bc4;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 1rem;
+}
+
+.form input:focus {
+    outline: 2px solid #5b6bb5;
+}
+
+.form button {
+    background: #3f51b5;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.form button:hover {
+    background: #303f9f;
+}
+
+/* Painel azul: 3 colunas lado a lado */
+.cards {
+    background: #adb8d9;
+    padding: 24px;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: start;
+}
+
+/* Cada coluna empilha seus cards para baixo */
+.coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.coluna-titulo {
+    font-size: 1rem;
+    text-align: center;
+    color: #2b2f45;
+    padding-bottom: 8px;
+    border-bottom: 3px solid #777;
+}
+
+.coluna-titulo.pendente   { border-bottom-color: #e53935; }
+.coluna-titulo.andamento  { border-bottom-color: #fb8c00; }
+.coluna-titulo.finalizado { border-bottom-color: #43a047; }
+
+/* Card cinza */
+.card {
+    background: #adadb0;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 5px solid #777;
+}
+
+.card.pendente   { border-top-color: #e53935; }
+.card.andamento  { border-top-color: #fb8c00; }
+.card.finalizado { border-top-color: #43a047; }
+
+/* Título e status lado a lado */
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-head p:first-child {
+    font-weight: 700;
+    color: #222;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.card-head p:first-child span {
+    display: inline-block;
+    transition: transform var(--duracao, 1s) linear;
+}
+
+/* Só nos títulos que realmente estouram: esmaece a ponta direita */
+.card-head p:first-child.rola {
+    mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+}
+
+/* Só em dispositivos com mouse: desliza até o fim do texto */
+@media (hover: hover) {
+    .card-head p:first-child.rola:hover {
+        mask-image: none;
+    }
+
+    .card-head p:first-child.rola:hover span {
+        transform: translateX(var(--deslocamento));
+    }
+}
+
+.card-head p:last-child {
+    font-size: 0.85rem;
+    color: #333;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Caixa da descrição */
+.card-desc {
+    height: 120px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: 6px;
+    padding: 10px;
+    color: #222;
+}
+
+/* Container dos botões */
+.bts {
+    display: flex;
+    gap: 10px;
+}
+
+/* Botões lado a lado (vale para <button> e <a>) */
+.bts button,
+.bts a {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 13.333px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.bts button:hover,
+.bts a:hover {
+    filter: brightness(0.9);
+}
+
+.btn-editar  { background: #3f51b5; }
+.btn-excluir { background: #d32f2f; }
+
+
+
+/* Aviso de sucesso (toast) */
+.alert-success {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 280px;
+    max-width: 90%;
+    padding: 14px 20px;
+    background: #e8f5e9;
+    color: #1b5e20;
+    border-left: 6px solid #43a047;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    animation: toast 4s ease forwards;
+}
+
+/* Ícone de check, sem precisar de mais HTML */
+.alert-success::before {
+    content: "✔";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background: #43a047;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.alert-success p {
+    font-weight: 600;
+}
+
+/* Entra deslizando, fica visível e some sozinho */
+@keyframes toast {
+    0%   { opacity: 0; transform: translate(-50%, -20px); }
+    8%   { opacity: 1; transform: translate(-50%, 0); }
+    90%  { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -20px); visibility: hidden; }
+}
+/* Telas menores: as 3 colunas viram 1 */
+@media (max-width: 800px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Arquivo edit.php */
+
+/* Textarea e select com o mesmo visual dos inputs */
+.form textarea,
+.form select {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    margin: 6px 0 14px;
+    border: 1px solid #8f9bc4;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 1rem;
+}
+
+.form textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.form textarea:focus,
+.form select:focus {
+    outline: 2px solid #5b6bb5;
+}
+
+/* Botões da tela de edição */
+.form .bts {
+    margin-top: 6px;
+}
+
+/* Link "Cancelar" com cara de botão */
+.btn-cancelar {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    background: #777;
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: filter 0.2s;
+}
+
+.btn-cancelar:hover {
+    filter: brightness(0.9);
+}
+
+
+/* Pop up | Modal */
+
+/* Pop-up de confirmação */
+.modal {
+    border: none;
+    border-radius: 12px;
+    padding: 28px 24px 22px;
+    width: min(90%, 360px);
+    text-align: center;
+    background: #fff;
+    color: #2b2f45;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    margin: auto; /* centraliza na tela */
+}
+
+/* Fundo escurecido atrás do pop-up */
+.modal::backdrop {
+    background: rgba(30, 33, 50, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+/* Ícone de alerta, sem precisar de imagem */
+.modal-icone {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #fdecea;
+    color: #d32f2f;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.modal h3 {
+    margin-bottom: 6px;
+}
+
+.modal p {
+    color: #555;
+    margin-bottom: 22px;
+}
+
+.modal-botoes {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-botoes button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.modal-botoes button:hover {
+    filter: brightness(0.9);
+}
+
+.modal-cancelar  { background: #e0e0e0; color: #333; }
+.modal-confirmar { background: #d32f2f; color: #fff; }
+
+/* Animação de entrada */
+.modal[open] {
+    animation: modal-entra 0.2s ease;
+}
+
+@keyframes modal-entra {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+}
